@@ -7,7 +7,11 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
 import tool.compet.core.DkLogcats
-import tool.compet.core.*
+import tool.compet.core.parseBooleanDk
+import tool.compet.core.parseDoubleDk
+import tool.compet.core.parseFloatDk
+import tool.compet.core.parseIntDk
+import tool.compet.core.parseLongDk
 import tool.compet.json.DkJsons
 
 /**
@@ -21,78 +25,27 @@ import tool.compet.json.DkJsons
  */
 @SuppressLint("ApplySharedPref")
 open class DkSharedPreference {
-	protected val prefs: SharedPreferences
-	protected val editor: SharedPreferences.Editor
+	val prefs: SharedPreferences
 
 	constructor(context: Context, prefName: String) {
 		this.prefs = context.getSharedPreferences(prefName, Context.MODE_PRIVATE)
-		this.editor = this.prefs.edit()
 	}
 
 	constructor(context: Context, prefName: String, prefMode: Int) {
 		this.prefs = context.getSharedPreferences(prefName, prefMode)
-		this.editor = this.prefs.edit()
 	}
 
 	operator fun contains(key: String): Boolean {
 		return this.prefs.contains(key)
 	}
 
-	//
-	// Integer
-	//
-	fun putInt(key: String, value: Int) : DkSharedPreference {
-		this.editor.putString(key, value.toString())
-		return this
-	}
-
-	fun getInt(key: String): Int {
-		return getString(key).parseIntDk()
-	}
-
-	fun getInt(key: String, defautValue: Int): Int {
-		return if (contains(key)) getString(key).parseIntDk() else defautValue
-	}
-
-	//
-	// Float
-	//
-	fun putFloat(key: String, value: Float) : DkSharedPreference {
-		this.editor.putString(key, value.toString())
-		return this
-	}
-
-	fun getFloat(key: String): Float {
-		return getString(key).parseFloatDk()
-	}
-
-	fun getFloatOrDefault(key: String, defaultValue: Float): Float {
-		return if (contains(key)) getString(key).parseFloatDk() else defaultValue
-	}
-
-	//
-	// Double
-	//
-	fun putDouble(key: String, value: Double) : DkSharedPreference {
-		this.editor.putString(key, value.toString())
-		return this
-	}
-
-	fun getDouble(key: String): Double {
-		return getString(key).parseDoubleDk()
-	}
-
-	fun getDoubleOrDefault(key: String, defaultValue: Double): Double {
-		return if (contains(key)) getString(key).parseDoubleDk() else defaultValue
+	fun edit(): PrefEditor {
+		return PrefEditor(this.prefs)
 	}
 
 	//
 	// Boolean
 	//
-	fun putBoolean(key: String, value: Boolean) : DkSharedPreference {
-		this.editor.putString(key, value.toString())
-		return this
-	}
 
 	fun getBoolean(key: String): Boolean {
 		return getString(key).parseBooleanDk()
@@ -102,13 +55,33 @@ open class DkSharedPreference {
 		return if (contains(key)) getString(key).parseBooleanDk() else defaultValue
 	}
 
+//	fun getBooleanOrPut(key: String, valueIfEntryNotExist: Boolean): Boolean {
+//		if (contains(key)) {
+//			return getString(key).parseBooleanDk()
+//		}
+//		putBoolean(key, valueIfEntryNotExist)
+//		return valueIfEntryNotExist
+//	}
+
+	fun getInt(key: String): Int {
+		return getString(key).parseIntDk()
+	}
+
+	fun getIntOrDefault(key: String, defautValue: Int): Int {
+		return if (contains(key)) getString(key).parseIntDk() else defautValue
+	}
+
+//	fun getIntOrPut(key: String, valueIfEntryNotExist: Int): Int {
+//		if (contains(key)) {
+//			return getString(key).parseIntDk()
+//		}
+//		putInt(key, valueIfEntryNotExist)
+//		return valueIfEntryNotExist
+//	}
+
 	//
 	// Long
 	//
-	fun putLong(key: String, value: Long) : DkSharedPreference {
-		this.editor.putString(key, value.toString())
-		return this
-	}
 
 	fun getLong(key: String): Long {
 		return getString(key).parseLongDk()
@@ -118,13 +91,57 @@ open class DkSharedPreference {
 		return if (contains(key)) getString(key).parseLongDk() else defaultValue
 	}
 
+//	fun getLongOrPut(key: String, valueIfEntryNotExist: Long): Long {
+//		if (contains(key)) {
+//			return getString(key).parseLongDk()
+//		}
+//		putLong(key, valueIfEntryNotExist)
+//		return valueIfEntryNotExist
+//	}
+
+	//
+	// Float
+	//
+
+	fun getFloat(key: String): Float {
+		return getString(key).parseFloatDk()
+	}
+
+	fun getFloatOrDefault(key: String, defaultValue: Float): Float {
+		return if (contains(key)) getString(key).parseFloatDk() else defaultValue
+	}
+
+//	fun getFloatOrPut(key: String, valueIfEntryNotExist: Float): Float {
+//		if (contains(key)) {
+//			return getString(key).parseFloatDk()
+//		}
+//		putFloat(key, valueIfEntryNotExist)
+//		return valueIfEntryNotExist
+//	}
+
+	//
+	// Double
+	//
+
+	fun getDouble(key: String): Double {
+		return getString(key).parseDoubleDk()
+	}
+
+	fun getDoubleOrDefault(key: String, defaultValue: Double): Double {
+		return if (contains(key)) getString(key).parseDoubleDk() else defaultValue
+	}
+
+//	fun getDoubleOrPut(key: String, valueIfEntryNotExist: Double): Double {
+//		if (contains(key)) {
+//			return getString(key).parseDoubleDk()
+//		}
+//		putDouble(key, valueIfEntryNotExist)
+//		return valueIfEntryNotExist
+//	}
+
 	//
 	// String
 	//
-	fun putString(key: String, value: String?) : DkSharedPreference {
-		this.editor.putString(key, value)
-		return this
-	}
 
 	/**
 	 * We perform try/catch to archive back-compability (load other types will cause exception).
@@ -140,7 +157,7 @@ open class DkSharedPreference {
 	}
 
 	/**
-	 * We perform try/catch to archive back-compability (load other types will cause exception).
+	 * We perform try/catch to archive back-compability (since get another types will cause exception).
 	 */
 	fun getStringOrDefault(key: String, defaultValue: String?): String? {
 		try {
@@ -152,13 +169,17 @@ open class DkSharedPreference {
 		return defaultValue
 	}
 
+//	fun getStringOrPut(key: String, valueIfEntryNotExist: String?): String? {
+//		if (contains(key)) {
+//			return getString(key)
+//		}
+//		putString(key, valueIfEntryNotExist)
+//		return valueIfEntryNotExist
+//	}
+
 	//
 	// String set
 	//
-	fun putStringSet(key: String, values: Set<String?>?) : DkSharedPreference {
-		this.editor.putStringSet(key, values)
-		return this
-	}
 
 	/**
 	 * We perform try/catch to archive back-compability (load other types will cause exception).
@@ -186,44 +207,31 @@ open class DkSharedPreference {
 		return defaultValue
 	}
 
+//	fun getStringSetOrPut(key: String, valueIfEntryNotExist: Set<String>?): Set<String>? {
+//		if (contains(key)) {
+//			return getStringSet(key)
+//		}
+//		putStringSet(key, valueIfEntryNotExist)
+//		return valueIfEntryNotExist
+//	}
+
 	//
 	// Json object
 	//
-	fun putJsonObject(key: String, value: Any?) : DkSharedPreference {
-		return putString(key, DkJsons.obj2json(value))
-	}
 
 	fun <T> getJsonObject(key: String, resClass: Class<T>): T? {
 		return DkJsons.json2obj(getString(key), resClass)
 	}
 
-	fun <T> getJsonObject(key: String, resClass: Class<T>, defaultValue: T?): T? {
+	fun <T> getJsonObjectOrDefault(key: String, resClass: Class<T>, defaultValue: T?): T? {
 		return if (contains(key)) DkJsons.json2obj(getString(key), resClass) else defaultValue
 	}
 
-	//
-	// CRUD
-	//
-
-	// Remove entry at given key.
-	fun removeKey(key: String) : DkSharedPreference {
-		this.editor.remove(key)
-		return this
-	}
-
-	// Remove all entries inside this pref.
-	fun clear() : DkSharedPreference {
-		this.editor.clear()
-		return this
-	}
-
-	// Commit to disk at background thread.
-	fun commitAsync() {
-		this.editor.apply()
-	}
-
-	// Commit to disk synchronously.
-	fun commitNow() {
-		this.editor.commit()
-	}
+//	fun <T> getJsonObjectOrPut(key: String, resClass: Class<T>, valueIfEntryNotExist: T?): T? {
+//		if (contains(key)) {
+//			return getJsonObject(key, resClass)
+//		}
+//		putJsonObject(key, valueIfEntryNotExist)
+//		return valueIfEntryNotExist
+//	}
 }
