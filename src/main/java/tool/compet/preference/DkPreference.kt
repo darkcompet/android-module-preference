@@ -21,10 +21,10 @@ import tool.compet.json.DkJsons
  * For back compability, this stores all value as `String` or `Set of String` since if we store with
  * other types (int, double...) then we maybe get an exception when load them with other type.
  *
- * By default, it does support for storing Json object.
+ * It also support for storing Json object.
  */
 @SuppressLint("ApplySharedPref")
-open class DkSharedPreference {
+open class DkPreference {
 	val prefs: SharedPreferences
 
 	constructor(context: Context, prefName: String) {
@@ -39,13 +39,9 @@ open class DkSharedPreference {
 		return this.prefs.contains(key)
 	}
 
-	fun edit(): PrefEditor {
-		return PrefEditor(this.prefs)
+	fun edit(): DkPreferenceEditor {
+		return DkPreferenceEditor(this.prefs)
 	}
-
-	//
-	// Boolean
-	//
 
 	fun getBoolean(key: String): Boolean {
 		return getString(key).parseBooleanDk()
@@ -55,14 +51,6 @@ open class DkSharedPreference {
 		return if (contains(key)) getString(key).parseBooleanDk() else defaultValue
 	}
 
-//	fun getBooleanOrPut(key: String, valueIfEntryNotExist: Boolean): Boolean {
-//		if (contains(key)) {
-//			return getString(key).parseBooleanDk()
-//		}
-//		putBoolean(key, valueIfEntryNotExist)
-//		return valueIfEntryNotExist
-//	}
-
 	fun getInt(key: String): Int {
 		return getString(key).parseIntDk()
 	}
@@ -70,18 +58,6 @@ open class DkSharedPreference {
 	fun getIntOrDefault(key: String, defautValue: Int): Int {
 		return if (contains(key)) getString(key).parseIntDk() else defautValue
 	}
-
-//	fun getIntOrPut(key: String, valueIfEntryNotExist: Int): Int {
-//		if (contains(key)) {
-//			return getString(key).parseIntDk()
-//		}
-//		putInt(key, valueIfEntryNotExist)
-//		return valueIfEntryNotExist
-//	}
-
-	//
-	// Long
-	//
 
 	fun getLong(key: String): Long {
 		return getString(key).parseLongDk()
@@ -91,18 +67,6 @@ open class DkSharedPreference {
 		return if (contains(key)) getString(key).parseLongDk() else defaultValue
 	}
 
-//	fun getLongOrPut(key: String, valueIfEntryNotExist: Long): Long {
-//		if (contains(key)) {
-//			return getString(key).parseLongDk()
-//		}
-//		putLong(key, valueIfEntryNotExist)
-//		return valueIfEntryNotExist
-//	}
-
-	//
-	// Float
-	//
-
 	fun getFloat(key: String): Float {
 		return getString(key).parseFloatDk()
 	}
@@ -111,18 +75,6 @@ open class DkSharedPreference {
 		return if (contains(key)) getString(key).parseFloatDk() else defaultValue
 	}
 
-//	fun getFloatOrPut(key: String, valueIfEntryNotExist: Float): Float {
-//		if (contains(key)) {
-//			return getString(key).parseFloatDk()
-//		}
-//		putFloat(key, valueIfEntryNotExist)
-//		return valueIfEntryNotExist
-//	}
-
-	//
-	// Double
-	//
-
 	fun getDouble(key: String): Double {
 		return getString(key).parseDoubleDk()
 	}
@@ -130,18 +82,6 @@ open class DkSharedPreference {
 	fun getDoubleOrDefault(key: String, defaultValue: Double): Double {
 		return if (contains(key)) getString(key).parseDoubleDk() else defaultValue
 	}
-
-//	fun getDoubleOrPut(key: String, valueIfEntryNotExist: Double): Double {
-//		if (contains(key)) {
-//			return getString(key).parseDoubleDk()
-//		}
-//		putDouble(key, valueIfEntryNotExist)
-//		return valueIfEntryNotExist
-//	}
-
-	//
-	// String
-	//
 
 	/**
 	 * We perform try/catch to archive back-compability (load other types will cause exception).
@@ -169,18 +109,6 @@ open class DkSharedPreference {
 		return defaultValue
 	}
 
-//	fun getStringOrPut(key: String, valueIfEntryNotExist: String?): String? {
-//		if (contains(key)) {
-//			return getString(key)
-//		}
-//		putString(key, valueIfEntryNotExist)
-//		return valueIfEntryNotExist
-//	}
-
-	//
-	// String set
-	//
-
 	/**
 	 * We perform try/catch to archive back-compability (load other types will cause exception).
 	 */
@@ -207,18 +135,6 @@ open class DkSharedPreference {
 		return defaultValue
 	}
 
-//	fun getStringSetOrPut(key: String, valueIfEntryNotExist: Set<String>?): Set<String>? {
-//		if (contains(key)) {
-//			return getStringSet(key)
-//		}
-//		putStringSet(key, valueIfEntryNotExist)
-//		return valueIfEntryNotExist
-//	}
-
-	//
-	// Json object
-	//
-
 	fun <T> getJsonObject(key: String, resClass: Class<T>): T? {
 		return DkJsons.json2obj(getString(key), resClass)
 	}
@@ -226,12 +142,4 @@ open class DkSharedPreference {
 	fun <T> getJsonObjectOrDefault(key: String, resClass: Class<T>, defaultValue: T?): T? {
 		return if (contains(key)) DkJsons.json2obj(getString(key), resClass) else defaultValue
 	}
-
-//	fun <T> getJsonObjectOrPut(key: String, resClass: Class<T>, valueIfEntryNotExist: T?): T? {
-//		if (contains(key)) {
-//			return getJsonObject(key, resClass)
-//		}
-//		putJsonObject(key, valueIfEntryNotExist)
-//		return valueIfEntryNotExist
-//	}
 }
