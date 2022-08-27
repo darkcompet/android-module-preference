@@ -25,7 +25,7 @@ import tool.compet.json.DkJsons
  */
 @SuppressLint("ApplySharedPref")
 open class DkPreference {
-	val prefs: SharedPreferences
+	protected val prefs: SharedPreferences
 
 	constructor(context: Context, prefName: String) {
 		this.prefs = context.getSharedPreferences(prefName, Context.MODE_PRIVATE)
@@ -39,93 +39,51 @@ open class DkPreference {
 		return this.prefs.contains(key)
 	}
 
+	/**
+	 * Call this to CRUD preference.
+	 * Do NOT forget commit after call this.
+	 */
 	fun edit(): DkPreferenceEditor {
 		return DkPreferenceEditor(this.prefs)
 	}
 
-	fun getBoolean(key: String): Boolean {
-		return getString(key).parseBooleanDk()
-	}
-
-	fun getBooleanOrDefault(key: String, defaultValue: Boolean): Boolean {
+	fun getBoolean(key: String, defaultValue: Boolean = false): Boolean {
 		return if (contains(key)) getString(key).parseBooleanDk() else defaultValue
 	}
 
-	fun getInt(key: String): Int {
-		return getString(key).parseIntDk()
-	}
-
-	fun getIntOrDefault(key: String, defautValue: Int): Int {
+	fun getInt(key: String, defautValue: Int): Int {
 		return if (contains(key)) getString(key).parseIntDk() else defautValue
 	}
 
-	fun getLong(key: String): Long {
-		return getString(key).parseLongDk()
-	}
-
-	fun getLongOrDefault(key: String, defaultValue: Long): Long {
+	fun getLong(key: String, defaultValue: Long): Long {
 		return if (contains(key)) getString(key).parseLongDk() else defaultValue
 	}
 
-	fun getFloat(key: String): Float {
-		return getString(key).parseFloatDk()
-	}
-
-	fun getFloatOrDefault(key: String, defaultValue: Float): Float {
+	fun getFloat(key: String, defaultValue: Float): Float {
 		return if (contains(key)) getString(key).parseFloatDk() else defaultValue
 	}
 
-	fun getDouble(key: String): Double {
-		return getString(key).parseDoubleDk()
-	}
-
-	fun getDoubleOrDefault(key: String, defaultValue: Double): Double {
+	fun getDouble(key: String, defaultValue: Double): Double {
 		return if (contains(key)) getString(key).parseDoubleDk() else defaultValue
 	}
 
 	/**
 	 * We perform try/catch to archive back-compability (load other types will cause exception).
 	 */
-	fun getString(key: String): String? {
-		try {
-			return prefs.getString(key, null)
-		}
-		catch (e: Exception) {
-			DkLogcats.error(this, e)
-		}
-		return null
-	}
-
-	/**
-	 * We perform try/catch to archive back-compability (since get another types will cause exception).
-	 */
-	fun getStringOrDefault(key: String, defaultValue: String?): String? {
+	fun getString(key: String, defaultValue: String? = null): String? {
 		try {
 			return prefs.getString(key, defaultValue)
 		}
 		catch (e: Exception) {
 			DkLogcats.error(this, e)
 		}
-		return defaultValue
-	}
-
-	/**
-	 * We perform try/catch to archive back-compability (load other types will cause exception).
-	 */
-	fun getStringSet(key: String): Set<String>? {
-		try {
-			return prefs.getStringSet(key, null)
-		}
-		catch (e: Exception) {
-			DkLogcats.error(this, e)
-		}
 		return null
 	}
 
 	/**
 	 * We perform try/catch to archive back-compability (load other types will cause exception).
 	 */
-	fun getStringSetOrDefault(key: String, defaultValue: Set<String>?): Set<String>? {
+	fun getStringSet(key: String, defaultValue: Set<String>?): Set<String>? {
 		try {
 			return prefs.getStringSet(key, defaultValue)
 		}
@@ -135,11 +93,7 @@ open class DkPreference {
 		return defaultValue
 	}
 
-	fun <T> getJsonObject(key: String, resClass: Class<T>): T? {
-		return DkJsons.json2obj(getString(key), resClass)
-	}
-
-	fun <T> getJsonObjectOrDefault(key: String, resClass: Class<T>, defaultValue: T?): T? {
+	fun <T> getJsonObject(key: String, resClass: Class<T>, defaultValue: T? = null): T? {
 		return if (contains(key)) DkJsons.json2obj(getString(key), resClass) else defaultValue
 	}
 }
