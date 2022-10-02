@@ -94,6 +94,6 @@ open class DkPreference {
 	}
 
 	fun <T> getJsonObject(key: String, resClass: Class<T>, defaultValue: T? = null): T? {
-		return if (contains(key)) DkJsons.json2obj(getString(key), resClass) else defaultValue
+		return if (contains(key)) DkJsons.toObj(getString(key), resClass) else defaultValue
 	}
 }

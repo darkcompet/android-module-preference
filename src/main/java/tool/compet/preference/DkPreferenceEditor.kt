@@ -42,7 +42,7 @@ class DkPreferenceEditor(private var prefs: SharedPreferences) {
 	}
 
 	fun putJsonObject(key: String, value: Any?): DkPreferenceEditor {
-		return putString(key, DkJsons.obj2json(value))
+		return putString(key, DkJsons.toJson(value))
 	}
 
 	/**
