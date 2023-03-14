@@ -51,19 +51,19 @@ open class DkPreference {
 		return if (contains(key)) getString(key).parseBooleanDk() else defaultValue
 	}
 
-	fun getInt(key: String, defautValue: Int): Int {
+	fun getInt(key: String, defautValue: Int = 0): Int {
 		return if (contains(key)) getString(key).parseIntDk() else defautValue
 	}
 
-	fun getLong(key: String, defaultValue: Long): Long {
+	fun getLong(key: String, defaultValue: Long = 0L): Long {
 		return if (contains(key)) getString(key).parseLongDk() else defaultValue
 	}
 
-	fun getFloat(key: String, defaultValue: Float): Float {
+	fun getFloat(key: String, defaultValue: Float = 0f): Float {
 		return if (contains(key)) getString(key).parseFloatDk() else defaultValue
 	}
 
-	fun getDouble(key: String, defaultValue: Double): Double {
+	fun getDouble(key: String, defaultValue: Double = 0.0): Double {
 		return if (contains(key)) getString(key).parseDoubleDk() else defaultValue
 	}
 
@@ -83,7 +83,7 @@ open class DkPreference {
 	/**
 	 * We perform try/catch to archive back-compability (load other types will cause exception).
 	 */
-	fun getStringSet(key: String, defaultValue: Set<String>?): Set<String>? {
+	fun getStringSet(key: String, defaultValue: Set<String>? = null): Set<String>? {
 		try {
 			return prefs.getStringSet(key, defaultValue)
 		}
